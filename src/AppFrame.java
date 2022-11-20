@@ -22,6 +22,7 @@ public class AppFrame extends JFrame {
     private int kernelSize;
     private float[] kernel;
     private FileWriter writeKernel;
+    long elapsedTime;
     public AppFrame() {
         setTitle("Apply Blurring Filter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,6 +41,8 @@ public class AppFrame extends JFrame {
         imagesPanel.add( blurredImagePanel);
         contentPane.add(imagesPanel, BorderLayout.CENTER);
 
+        JPanel ctrlUpPanel = new JPanel();
+        contentPane.add(ctrlUpPanel, BorderLayout.NORTH);
         JPanel ctrlPanel = new JPanel();
         contentPane.add(ctrlPanel, BorderLayout.SOUTH);
 
@@ -50,8 +53,15 @@ public class AppFrame extends JFrame {
         JLabel labelKernelDimension = new JLabel("Specify the Kernel Dimension:");
         kernelDimension = new JTextField();
         kernelDimension.setPreferredSize(new Dimension(50, 25));
-        ctrlPanel.add(labelKernelDimension);
-        ctrlPanel.add(kernelDimension);
+        ctrlUpPanel.add(labelKernelDimension);
+        JSlider kernelSlide = new JSlider(JSlider.HORIZONTAL, 0, 50, 0);
+        kernelSlide.setPaintTicks(true);
+        kernelSlide.setPaintLabels(true);
+        kernelSlide.setMinorTickSpacing(1);
+        kernelSlide.setMajorTickSpacing(10);
+        kernelSlide.addChangeListener(e -> kernelDimension.setText(String.valueOf(kernelSlide.getValue())));
+        ctrlUpPanel.add(kernelSlide);
+        ctrlUpPanel.add(kernelDimension);
 
         JButton btnLoadKernel = new JButton("Load Kernel Info");
         btnLoadKernel.addActionListener(e -> {
@@ -87,7 +97,16 @@ public class AppFrame extends JFrame {
                     kernel[i] = 1.0f / (kernelSize * kernelSize);
             }
         });
-        ctrlPanel.add(btnLoadKernel);
+        ctrlUpPanel.add(btnLoadKernel);
+
+        JButton btnShowBlurringInfo = new JButton("Show Kernel Info");
+        btnShowBlurringInfo.addActionListener(e -> {
+            String info = "DIMENSION: " + kernelSize + "\n" +
+                    "VALUES: " + getInfo() +
+                    "TIME ELAPSED: " + elapsedTime / 1000000000 + " seconds/ " + elapsedTime / 1000000 + " milliseconds";
+            JOptionPane.showMessageDialog(this, info, infoTitle, JOptionPane.INFORMATION_MESSAGE);
+        });
+        ctrlUpPanel.add(btnShowBlurringInfo);
 
         JButton btnSaveKernelInfo = new JButton("Save Kernel Info");
         btnSaveKernelInfo.addActionListener(e -> {
@@ -116,7 +135,7 @@ public class AppFrame extends JFrame {
                 }
             }
         });
-        ctrlPanel.add(btnSaveKernelInfo);
+        ctrlUpPanel.add(btnSaveKernelInfo);
 
         JButton btnBlurSimple = new JButton("Simple Blur");
         btnBlurSimple.addActionListener(e -> {
@@ -179,12 +198,7 @@ public class AppFrame extends JFrame {
                 }
 
         blurredImagePanel.setImage(blurredImage);
-        long elapsedTime = System.nanoTime() - startTime;
-        String info = "FILTER: lowpass filter\n" +
-                "DIMENSION: " + kernelSize + "\n" +
-                "VALUES: " + getInfo() +
-                "TIME ELAPSED: " + elapsedTime/1000000000 + " seconds/ " + elapsedTime/1000000 + " milliseconds";
-        JOptionPane.showMessageDialog(this, info, infoTitle, JOptionPane.INFORMATION_MESSAGE);
+        elapsedTime = System.nanoTime() - startTime;
     }
     protected void onJavaBlur(BufferedImage inputImage, Kernel kernel) {
         long startTime = System.nanoTime();
@@ -192,12 +206,7 @@ public class AppFrame extends JFrame {
         ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
         convolveOp.filter(inputImage, blurredImage);
         blurredImagePanel.setImage(blurredImage);
-        long elapsedTime = System.nanoTime() - startTime;
-        String info = "FILTER: Java API filter\n" +
-                "DIMENSION: " + kernelSize + "\n" +
-                "VALUES: " + getInfo() +
-                "TIME ELAPSED: " + elapsedTime/1000000000 + " seconds/ " + elapsedTime/1000000 + " milliseconds";
-        JOptionPane.showMessageDialog(this, info, infoTitle, JOptionPane.INFORMATION_MESSAGE);
+        elapsedTime = System.nanoTime() - startTime;
     }
     protected void onSave() {
         String format = openedImageName.substring(openedImageName.lastIndexOf(".") + 1);
@@ -225,8 +234,5 @@ public class AppFrame extends JFrame {
         valori.append("\n");
         return valori;
     }
-    /*
-    1. mai multe filtre de netezire
-    2. trei variante de tratare a situatiilor in care nucleul depaseste zona imaginii
-    */
+    /*Trei variante de tratare a situatiilor in care nucleul depaseste zona imaginii*/
 }
