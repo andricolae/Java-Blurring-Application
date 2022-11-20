@@ -99,7 +99,7 @@ public class AppFrame extends JFrame {
         });
         ctrlUpPanel.add(btnLoadKernel);
 
-        JButton btnShowBlurringInfo = new JButton("Show Kernel Info");
+        JButton btnShowBlurringInfo = new JButton("Show Processing Info");
         btnShowBlurringInfo.addActionListener(e -> {
             String info = "DIMENSION: " + kernelSize + "\n" +
                     "VALUES: " + getInfo() +
@@ -189,11 +189,13 @@ public class AppFrame extends JFrame {
                     kernelDataIndex = 0;
 
                     for (int ky = -kernelRadius; ky <= kernelRadius; ky++)
-                        for (int kx = -kernelRadius; kx <= kernelRadius; kx++)
+                        for (int kx = -kernelRadius; kx <= kernelRadius; kx++) {
                             if ((x + kx) < 0 || (x + kx) > inputImage.getWidth() - 1 || (y + ky) < 0 || (y + ky) > inputImage.getHeight() - 1)
                                 gray += 0;
                             else
                                 gray += kernelData[kernelDataIndex] * inputImage.getRaster().getSample(x + kx, y + ky, band);
+                            kernelDataIndex++;
+                        }
                     blurredImage.getRaster().setSample(x, y, band, Utils.constrain(Math.round(gray)));
                 }
 
@@ -218,7 +220,6 @@ public class AppFrame extends JFrame {
         }
         JOptionPane.showMessageDialog(this, "Image Saved!", "WARNING", JOptionPane.INFORMATION_MESSAGE);
     }
-
     protected StringBuilder getInfo() {
         StringBuilder valori = new StringBuilder();
         int aux = 0;
@@ -228,11 +229,10 @@ public class AppFrame extends JFrame {
                 valori.append("\n");
                 aux = 0;
             }
-            valori.append(kernel[i]).append(" | ");
+            valori.append(kernel[i]).append("  ");
             aux ++;
         }
         valori.append("\n");
         return valori;
     }
-    /*Trei variante de tratare a situatiilor in care nucleul depaseste zona imaginii*/
 }

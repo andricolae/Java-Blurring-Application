@@ -13,11 +13,7 @@ public class Utils {
         }
         return image;
     }
-
-    public static int constrain (int value, int min, int max) {
-        return value > max ? max : (Math.max(value, min));
-    }
-
+    public static int constrain (int value, int min, int max) { return value > max ? max : (Math.max(value, min)); }
     public static int constrain (int value) {
         return constrain(value, 0, 255);
     }
