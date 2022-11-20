@@ -98,8 +98,8 @@ public class AppFrame extends JFrame {
                 kernelInfo.append(kernelSize);
                 kernelInfo.append("\n");
                 int aux = 0;
-                for (int i = 0; i < kernelSize; i++) {
-                    if (aux == Math.sqrt(kernelSize)) {
+                for (int i = 0; i < kernelSize * kernelSize; i++) {
+                    if (aux == kernelSize) {
                         kernelInfo.append("\n");
                         aux = 0;
                     }
@@ -214,8 +214,8 @@ public class AppFrame extends JFrame {
         StringBuilder valori = new StringBuilder();
         int aux = 0;
         valori.append("\n");
-        for (int i = 0; i < kernelSize; i++){
-            if (aux == Math.sqrt(kernelSize)) {
+        for (int i = 0; i < kernelSize * kernelSize; i++){
+            if (aux == kernelSize) {
                 valori.append("\n");
                 aux = 0;
             }
@@ -225,6 +225,8 @@ public class AppFrame extends JFrame {
         valori.append("\n");
         return valori;
     }
-    /*  1. mai multe filtre de netezire
-        2. trei variante de tratare a situatiilor in care nucleul depaseste zona imaginii   */
+    /*
+    1. mai multe filtre de netezire
+    2. trei variante de tratare a situatiilor in care nucleul depaseste zona imaginii
+    */
 }
