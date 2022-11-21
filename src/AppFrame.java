@@ -142,7 +142,7 @@ public class AppFrame extends JFrame {
             if (workingImage == null || kernelSize == 0 || kernel == null)
                 JOptionPane.showMessageDialog(this, "Image or Kernel Doesn't Exist!", "ALERT", JOptionPane.INFORMATION_MESSAGE);
             else
-                onSimpleBlur(workingImage, new Kernel(kernelSize, kernelSize, kernel));
+                onBlur(workingImage, new Kernel(kernelSize, kernelSize, kernel));
         });
         ctrlPanel.add(btnBlurSimple);
 
@@ -174,7 +174,7 @@ public class AppFrame extends JFrame {
             originalImagePanel.setImage(workingImage);
         }
     }
-    protected void onSimpleBlur(BufferedImage inputImage, Kernel kernel) {
+    protected void onBlur(BufferedImage inputImage, Kernel kernel) {
         long startTime = System.nanoTime();
         BufferedImage blurredImage = new BufferedImage(inputImage.getWidth(), inputImage.getHeight(), inputImage.getType());
         int kernelWidth = kernel.getWidth();
@@ -198,7 +198,6 @@ public class AppFrame extends JFrame {
                         }
                     blurredImage.getRaster().setSample(x, y, band, Utils.constrain(Math.round(gray)));
                 }
-
         blurredImagePanel.setImage(blurredImage);
         elapsedTime = System.nanoTime() - startTime;
     }
