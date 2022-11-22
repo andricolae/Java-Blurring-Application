@@ -221,10 +221,12 @@ public class AppFrame extends JFrame {
     protected void onNiceBlur(BufferedImage inputImage, Kernel kernel) {
         long startTime = System.nanoTime();
         BufferedImage paddingInputImage = Utils.paddedImage(inputImage, kernelSize);
-        BufferedImage blurredPaddingImage = new BufferedImage(paddingInputImage.getWidth(), paddingInputImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        BufferedImage blurredPaddingImage = new BufferedImage(paddingInputImage.getWidth(),
+                paddingInputImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
         ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_ZERO_FILL, null);
         convolveOp.filter(paddingInputImage, blurredPaddingImage);
-        blurredImagePanel.setImage(blurredPaddingImage.getSubimage(kernelSize, kernelSize, inputImage.getWidth(), inputImage.getHeight()));
+        blurredImagePanel.setImage(blurredPaddingImage.getSubimage(kernelSize, kernelSize,
+                inputImage.getWidth(), inputImage.getHeight()));
         elapsedTime = System.nanoTime() - startTime;
     }
     protected void onSave() {
