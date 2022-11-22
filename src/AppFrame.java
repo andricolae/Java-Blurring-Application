@@ -155,6 +155,15 @@ public class AppFrame extends JFrame {
         });
         ctrlPanel.add(btnBlurJavaAPI);
 
+        JButton btnBlurEdgeSensitive = new JButton("Nice Blur");
+        btnBlurEdgeSensitive.addActionListener(e -> {
+            if (workingImage == null || kernelSize == 0 || kernel == null)
+                JOptionPane.showMessageDialog(this, "Image or Kernel Doesn't Exist!", "ALERT", JOptionPane.INFORMATION_MESSAGE);
+            else
+                onNiceBlur(workingImage, new Kernel(kernelSize, kernelSize, kernel));
+        });
+        ctrlPanel.add(btnBlurEdgeSensitive);
+
         JButton btnSaveBlurred = new JButton("Save Blurred Image");
         btnSaveBlurred.addActionListener(e -> {
             if (blurredImagePanel.getImage() == null)
@@ -207,6 +216,15 @@ public class AppFrame extends JFrame {
         ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
         convolveOp.filter(inputImage, blurredImage);
         blurredImagePanel.setImage(blurredImage);
+        elapsedTime = System.nanoTime() - startTime;
+    }
+    protected void onNiceBlur(BufferedImage inputImage, Kernel kernel) {
+        long startTime = System.nanoTime();
+        BufferedImage paddingInputImage = Utils.paddedImage(inputImage, kernelSize);
+        BufferedImage blurredPaddingImage = new BufferedImage(paddingInputImage.getWidth(), paddingInputImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_ZERO_FILL, null);
+        convolveOp.filter(paddingInputImage, blurredPaddingImage);
+        blurredImagePanel.setImage(blurredPaddingImage.getSubimage(kernelSize, kernelSize, inputImage.getWidth(), inputImage.getHeight()));
         elapsedTime = System.nanoTime() - startTime;
     }
     protected void onSave() {
